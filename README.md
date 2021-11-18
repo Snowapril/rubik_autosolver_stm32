@@ -1,0 +1,1 @@
+# rubik_autosolver_stm32
