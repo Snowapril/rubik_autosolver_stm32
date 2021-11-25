@@ -3058,6 +3058,12 @@
             <name>$PROJ_DIR$\Modules\motor.h</name>
         </file>
         <file>
+            <name>$PROJ_DIR$\Modules\motor_driver.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Modules\motor_driver.h</name>
+        </file>
+        <file>
             <name>$PROJ_DIR$\Modules\pressure.c</name>
         </file>
         <file>
@@ -3074,6 +3080,12 @@
         <name>Sources</name>
         <file>
             <name>$PROJ_DIR$\Sources\main.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Sources\rubik_autosolver.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Sources\rubik_autosolver.h</name>
         </file>
     </group>
 </project>
