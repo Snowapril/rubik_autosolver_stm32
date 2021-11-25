@@ -1,16 +1,19 @@
 #ifndef MOTOR_DRIVER_H
 #define MOTOR_DRIVER_H
 
+#include "stm32f10x_tim.h"
+#include "stm32f10x_gpio.h"
+
 // Use same GPIO pin for clock & each port
 struct MotorDriverConfigure {
     unsigned int gpio_clock_pin;
-    unsigned int step_port;
+    GPIO_TypeDef* step_port;
     unsigned int step_pin;
-    unsigned int enable_port;
+    GPIO_TypeDef* enable_port;
     unsigned int enable_pin;
-    unsigned int dir_port;
+    GPIO_TypeDef* dir_port;
     unsigned int dir_pin;
-    unsigned int timer_pin;
+    TIM_TypeDef* timer_pin;
     unsigned int timer_clock_pin;
 };
 

@@ -1,14 +1,12 @@
 #include "motor_driver.h"
 #include "stm32f10x.h"
 #include "stm32f10x_rcc.h"
-#include "stm32f10x_tim.h"
-#include "stm32f10x_gpio.h"
 #include "system_stm32f10x.h"
 
 void motor_driver_init_clock(struct MotorDriverConfigure* config) {
     // Clock enable
     RCC_APB1PeriphClockCmd(config->timer_clock_pin, ENABLE);
-	RCC_APB2PeriphClockCmd(config->gpio_clock_pin, ENABLE);
+    RCC_APB2PeriphClockCmd(config->gpio_clock_pin, ENABLE);
 }
 
 void motor_driver_init_timer(struct MotorDriverConfigure* config) {
