@@ -1,7 +1,6 @@
 #include "rubik_autosolver.h"
 
-int main(void)
-{
+int main(void) {
     struct SolverConfig config = {
         10 // dummy value
     };
