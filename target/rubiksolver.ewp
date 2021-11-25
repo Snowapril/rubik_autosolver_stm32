@@ -2316,21 +2316,36 @@
     </group>
     <group>
         <name>Modules</name>
-        <group>
-            <name>Bluetooth</name>
-        </group>
-        <group>
-            <name>Gyro</name>
-        </group>
-        <group>
-            <name>Motor</name>
-        </group>
-        <group>
-            <name>Pressure</name>
-        </group>
-        <group>
-            <name>Relay</name>
-        </group>
+        <file>
+            <name>$PROJ_DIR$\Modules\bluetooth.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Modules\bluetooth.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Modules\gyro.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Modules\gyro.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Modules\motor.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Modules\motor.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Modules\pressure.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Modules\pressure.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Modules\relay.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Modules\relay.h</name>
+        </file>
     </group>
     <group>
         <name>Sources</name>
