@@ -30,3 +30,10 @@
 1627	2022	6595068158690440	C:/Users/user/Desktop/Github/rubik_autosolver_stm32/target/Debug/Obj/Libraries/STM32F10x/src/stm32f10x_tim.o	a4ebf98b3c17ab70
 2047	2495	6595068163500542	C:/Users/user/Desktop/Github/rubik_autosolver_stm32/target/Debug/Exe/rubiksolver.out	cbaac76414317664
 2565	2630	6595068164910516	C:/Users/user/Desktop/Github/rubik_autosolver_stm32/target/Debug/Exe/rubiksolver.bin	f7abd047b34375e7
+2	215	6595076246344802	C:/Users/user/Desktop/Github/rubik_autosolver_stm32/target/Debug/Obj/Modules/bluetooth.o	f14faa4aa7c0b710
+10	243	6595076246484799	C:/Users/user/Desktop/Github/rubik_autosolver_stm32/target/Debug/Obj/Modules/motor.o	6e3878570b4dea77
+13	297	6595076247104807	C:/Users/user/Desktop/Github/rubik_autosolver_stm32/target/Debug/Obj/Modules/relay.o	e7300deca1a2edf
+17	318	6595076247294817	C:/Users/user/Desktop/Github/rubik_autosolver_stm32/target/Debug/Obj/Modules/pressure.o	e6060402ed86918
+5	336	6595076247114798	C:/Users/user/Desktop/Github/rubik_autosolver_stm32/target/Debug/Obj/Modules/gyro.o	4420f4d89016a67b
+354	488	6595076249144796	C:/Users/user/Desktop/Github/rubik_autosolver_stm32/target/Debug/Exe/rubiksolver.out	4a4ded26d21375aa
+558	571	6595076250024840	C:/Users/user/Desktop/Github/rubik_autosolver_stm32/target/Debug/Exe/rubiksolver.bin	f7abd047b34375e7
