@@ -8,5 +8,9 @@ void init_autosolver(struct SolverConfig* config) {
     SystemInit();
 
     // common clock enable
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+}
+
+int get_autosolver_should_close() {
+  return RAS_FALSE;
 }
