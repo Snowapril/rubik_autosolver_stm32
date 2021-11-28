@@ -10,7 +10,6 @@ void relay_gpio_configuration(relay* R){
   relay_GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   relay_GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
   GPIO_Init(GPIOC, &relay_GPIO_InitStructure);
-  
 }
 
 void relay_on(relay* R){
