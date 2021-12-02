@@ -50,8 +50,8 @@ void NVIC_Configure(){
   NVIC_Init(&nvic);
 }
 
-void get_value(){
+uint16_t get_adc_value(){
   ADC_SoftwareStartConvCmd(ADC1, ENABLE);
-  value = ADC_GetConversionValue(ADC1);
+  uint16_t value = ADC_GetConversionValue(ADC1);
   return value;
 }

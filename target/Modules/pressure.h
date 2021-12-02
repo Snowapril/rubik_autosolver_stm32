@@ -16,6 +16,6 @@ void adc_configuration(struct pressure* P);
 void gpio_configuration(struct pressure* P);
 void ADC1_2_IRQHandler();
 void NVIC_Configure();
-void get_value();
+uint16_t get_adc_value();
 
 #endif
