@@ -64,16 +64,16 @@ void motor_driver_init(struct MotorDriverConfig* config) {
 
 void motor_driver_change_dir(struct MotorDriverConfig* config, int clockwise) {
     if (clockwise) {
-        GPIO_ResetBits(config->dir_port, config->dir_pin);
+        GPIO_ResetBits(config->common_gpio_port, config->dir_pin);
     } else {
-        GPIO_SetBits(config->dir_port, config->dir_pin);
+        GPIO_SetBits(config->common_gpio_port, config->dir_pin);
     }
 }
 
 void motor_driver_change_state(struct MotorDriverConfig* config, int enable) {
     if (enable) {
-        GPIO_SetBits(config->enable_port, config->enable_pin);
+        GPIO_SetBits(config->common_gpio_port, config->enable_pin);
     } else {
-        GPIO_ResetBits(config->enable_port, config->enable_pin);
+        GPIO_ResetBits(config->common_gpio_port, config->enable_pin);
     }
 }
