@@ -3,13 +3,13 @@
 #include "stm32f10x_rcc.h"
 #include "system_stm32f10x.h"
 
-void motor_driver_init_clock(struct MotorDriverConfigure* config) {
+static void motor_driver_init_clock(struct MotorDriverConfig* config) {
     // Clock enable
-    RCC_APB1PeriphClockCmd(config->timer_clock_pin, ENABLE);
-    RCC_APB2PeriphClockCmd(config->gpio_clock_pin, ENABLE);
+    RCC_APB1PeriphClockCmd(config->timer_clock_port, ENABLE);
+    RCC_APB2PeriphClockCmd(config->gpio_clock_port, ENABLE);
 }
 
-void motor_driver_init_timer(struct MotorDriverConfigure* config) {
+static void motor_driver_init_timer(struct MotorDriverConfig* config) {
     // Motor timer configure
     uint16_t prescale = (uint16_t) (SystemCoreClock / 1000000) - 1;
     TIM_TimeBaseInitTypeDef timer_init_structure;
@@ -32,27 +32,27 @@ void motor_driver_init_timer(struct MotorDriverConfigure* config) {
     TIM_Cmd(config->timer_pin, ENABLE);
 }  
 
-void motor_driver_init_gpio(struct MotorDriverConfigure* config) {
+static void motor_driver_init_gpio(struct MotorDriverConfig* config) {
     GPIO_InitTypeDef step_init_struct;
     step_init_struct.GPIO_Pin     = config->step_pin;
     step_init_struct.GPIO_Speed   = GPIO_Speed_50MHz;
     step_init_struct.GPIO_Mode    = GPIO_Mode_AF_PP;
-    GPIO_Init(config->step_port, &step_init_struct);
+    GPIO_Init(config->common_gpio_port, &step_init_struct);
   
     GPIO_InitTypeDef enable_init_struct;
     enable_init_struct.GPIO_Pin     = config->enable_pin;
     enable_init_struct.GPIO_Speed   = GPIO_Speed_50MHz;
     enable_init_struct.GPIO_Mode    = GPIO_Mode_Out_PP;
-    GPIO_Init(config->enable_port, &enable_init_struct);
+    GPIO_Init(config->common_gpio_port, &enable_init_struct);
 
     GPIO_InitTypeDef dir_init_struct;
     dir_init_struct.GPIO_Pin     = config->dir_pin;
     dir_init_struct.GPIO_Speed   = GPIO_Speed_50MHz;
     dir_init_struct.GPIO_Mode    = GPIO_Mode_Out_PP;
-    GPIO_Init(config->dir_port, &dir_init_struct);
+    GPIO_Init(config->common_gpio_port, &dir_init_struct);
 }
 
-void motor_driver_init(struct MotorDriverConfigure* config) {
+void motor_driver_init(struct MotorDriverConfig* config) {
     motor_driver_init_clock(config);
     motor_driver_init_timer(config);
     motor_driver_init_gpio(config);    
@@ -62,7 +62,7 @@ void motor_driver_init(struct MotorDriverConfigure* config) {
     motor_driver_change_state(config, 1);
 }
 
-void motor_driver_change_dir(struct MotorDriverConfigure* config, int clockwise) {
+void motor_driver_change_dir(struct MotorDriverConfig* config, int clockwise) {
     if (clockwise) {
         GPIO_ResetBits(config->dir_port, config->dir_pin);
     } else {
@@ -70,7 +70,7 @@ void motor_driver_change_dir(struct MotorDriverConfigure* config, int clockwise)
     }
 }
 
-void motor_driver_change_state(struct MotorDriverConfigure* config, int enable) {
+void motor_driver_change_state(struct MotorDriverConfig* config, int enable) {
     if (enable) {
         GPIO_SetBits(config->enable_port, config->enable_pin);
     } else {
