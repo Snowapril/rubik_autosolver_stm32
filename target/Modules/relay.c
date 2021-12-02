@@ -1,4 +1,5 @@
 #include "relay.h"
+#include "stm32f10x.h"
 
 void relay_clock_enable(){
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
@@ -13,9 +14,9 @@ void relay_gpio_configuration(relay* R){
 }
 
 void relay_on(relay* R){
-  GPIOC_BSRR = R->set;
+  GPIOC->BSRR = R->set;
 }
 
 void relay_off(relay* R){
-  GPIOC_BSRR = R->reset;
+  GPIOC->BSRR = R->reset;
 }
