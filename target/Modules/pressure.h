@@ -12,8 +12,8 @@ typedef struct{
 } pressure
 
 void clock_enable();
-void adc_configuration();
-void gpio_configuration();
+void adc_configuration(struct pressure* P);
+void gpio_configuration(struct pressure* P);
 void ADC1_2_IRQHandler();
 void NVIC_Configure();
 void get_value();
