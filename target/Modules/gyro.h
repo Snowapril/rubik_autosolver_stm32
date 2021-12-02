@@ -9,6 +9,21 @@
 #define BufferSize             4 
 #define ClockSpeed             200000
 
+/*
+GYRO
+GPIOB
+SCL = PB10
+SDA = PB11
+
+*/
+
+
+struct GyroConfig {
+    GPIO_TypeDef* common_gpio_port;
+    unsigned int SCL_pin = GPIO_Pin_10;
+    unsigned int SDA_pin = GPIO_Pin_11;
+};
+
 void gyro_RCC_Configuration();
 void gyro_GPIO_Configuration();
 void gyro_I2C2_Configuration();
