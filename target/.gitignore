@@ -5,7 +5,6 @@
 # IAR Debug Exe
 **/Debug/
 
-
 # IAR Debug Obj
 **/Obj/*.pbd
 **/Obj/*.pbd.*
@@ -17,9 +16,6 @@
 
 # IAR backup files
 Backup*
-
-# IAR .dep files
-*.dep
 
 # Compiled Binaries
 *.bin
