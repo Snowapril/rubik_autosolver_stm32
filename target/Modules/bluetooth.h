@@ -14,7 +14,7 @@ typedef struct BLUE_CONFIG{
     bool isATscan;
 }BlueConfig;
 
-void Bluetooth_init(BlueConfig *config);
+void Bluetooth_Init(BlueConfig *config);
 
 int  Bluetooth_send_data(const char *data, BlueConfig *config);
 
