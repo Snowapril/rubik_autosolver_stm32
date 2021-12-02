@@ -7,7 +7,7 @@ void clock_enable(){
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
 }
 
-void adc_configuration(){
+void adc_configuration(struct pressure* P){
   ADC_InitTypeDef adc;
 
   adc.ADC_Mode = ADC_Mode_Independent;
@@ -18,7 +18,7 @@ void adc_configuration(){
   adc.ADC_NbrOfChannel = 1;
   ADC_Init(ADC1, &adc);
   
-  ADC_RegularChannelConfig(ADC1, ADC_Channel_10, 1, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, P->channel, 1, ADC_SampleTime_239Cycles5);
   ADC_DMACmd(ADC1,ENABLE);
   ADC_Cmd(ADC1, ENABLE);
   ADC_ResetCalibration(ADC1);
@@ -27,9 +27,9 @@ void adc_configuration(){
   ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 }
 
-void gpio_configuration(){
+void gpio_configuration(struct pressure* P){
   GPIO_InitTypeDef pressure_GPIO_InitStructure;
-  pressure_GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
+  pressure_GPIO_InitStructure.GPIO_Pin = P->pin;
   pressure_GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   pressure_GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
   GPIO_Init(GPIOC, &pressure_GPIO_InitStructure);
@@ -52,6 +52,6 @@ void NVIC_Configure(){
 
 void get_value(){
   ADC_SoftwareStartConvCmd(ADC1, ENABLE);
-  val = ADC_GetConversionValue(ADC1);
+  value = ADC_GetConversionValue(ADC1);
   return value;
 }
