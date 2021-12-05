@@ -6,16 +6,14 @@
 #include "stm32f10x_gpio.h"
 #include "misc.h"
 
+#define WEIGHT 500;
+uint16_t value = 0;
+
 typedef struct{
   uint16_t pin;/*GPIO_Pin_0*/
   uint8_t channel;/*ADC_Channel_10 */
 } pressure
 
-void clock_enable();
-void adc_configuration(struct pressure* P);
-void gpio_configuration(struct pressure* P);
-void ADC1_2_IRQHandler();
-void NVIC_Configure();
-uint16_t get_adc_value();
+void pressure_configuration(pressure* P);
 
 #endif
