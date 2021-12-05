@@ -5,12 +5,11 @@
 #include "stm32f10x_gpio.h"
 
 typedef struct {
-  unsigned int pin;
-  unsigned int set;
-  unsigned int reset;
+  uint16_t pin;/*GPIO_Pin_8 ~ 13*/
+  uint32_t set;/*GPIO_BSRR_BS8~13*/
+  uint32_t reset;/*GPIO_BSRR_BR8~13*/
 } relay;
 
-void relay_clock_enable();
 void relay_gpio_configuration(relay* R);
 void relay_on(relay* R);
 void relay_off(relay* R);
