@@ -4,6 +4,7 @@ volatile uint32_t PRESSURE_VALUE = 0;
 
 static void clock_enable(){
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 }
@@ -38,11 +39,6 @@ void pressure_init(pressure* P){
   ADC_RegularChannelConfig(ADC1, P->channel, 1, ADC_SampleTime_239Cycles5);
   ADC_DMACmd(ADC1,ENABLE);
   ADC_Cmd(ADC1, ENABLE);
-  ADC_ResetCalibration(ADC1);
-  while (ADC_GetResetCalibrationStatus(ADC1));
-  ADC_StartCalibration(ADC1);
-  while (ADC_GetCalibrationStatus(ADC1));
-  ADC_SoftwareStartConvCmd(ADC1, ENABLE);
   
   GPIO_InitTypeDef pressure_GPIO_InitStructure;
   pressure_GPIO_InitStructure.GPIO_Pin = P->pin;
@@ -68,6 +64,15 @@ void DMA_Configure(void) {
     DMA_InitStructure.DMA_M2M = DMA_M2M_Disable; 
     DMA_Init(DMA1_Channel1, &DMA_InitStructure); 
     DMA_Cmd(DMA1_Channel1, ENABLE);
+}
+
+void adc_start(){
+  DMA_Configure(); 
+  ADC_ResetCalibration(ADC1);
+  while (ADC_GetResetCalibrationStatus(ADC1));
+  ADC_StartCalibration(ADC1);
+  while (ADC_GetCalibrationStatus(ADC1));
+  ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 }
 
 bool pressure_check(){
