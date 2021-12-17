@@ -8,6 +8,7 @@
 #include "stm32f10x_exti.h"
 
 #include <string.h>
+#include <stdbool.h>
 
 typedef struct BLUE_CONFIG{
     bool isValid;

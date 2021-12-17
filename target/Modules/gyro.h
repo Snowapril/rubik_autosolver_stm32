@@ -29,8 +29,6 @@ SDA = PB7
 char Gyro_Data[8];
 uint8_t countx=0;
 
-void delay();
-
 void gyro_RCC_Configuration();
 void gyro_GPIO_Configuration();
 void gyro_I2C1_Configuration();

@@ -1,4 +1,5 @@
 #include "bluetooth.h"
+#include "Common/utils.h"
 
 //RCC initiate for Bluetooth
 static void Bluetooth_RCC_Init(){
@@ -9,19 +10,6 @@ static void Bluetooth_RCC_Init(){
 // GPIO initiate for Bluetooth
 static void Bluetooth_GPIO_Init(){
     GPIO_InitTypeDef Gpio_Init;
-
-    Gpio_Init.GPIO_Pin   = GPIO_Pin_9;
-    Gpio_Init.GPIO_Speed = GPIO_Speed_50MHz;
-    Gpio_Init.GPIO_Mode  = GPIO_Mode_AF_PP;
-    
-    GPIO_Init(GPIOA, &Gpio_Init);
-
-    Gpio_Init.GPIO_Pin   = GPIO_Pin_10;
-    Gpio_Init.GPIO_Speed = GPIO_Speed_50MHz;
-    Gpio_Init.GPIO_Mode  = GPIO_Mode_IPD;
-    
-    GPIO_Init(GPIOA, &Gpio_Init);
-
     Gpio_Init.GPIO_Pin   = GPIO_Pin_2;
     Gpio_Init.GPIO_Speed = GPIO_Speed_50MHz;
     Gpio_Init.GPIO_Mode  = GPIO_Mode_AF_PP;
@@ -85,11 +73,6 @@ static void Bluetooth_NVIC_Init(){
     Nvic_Init.NVIC_IRQChannelCmd                = ENABLE;
     
 	NVIC_Init(&Nvic_Init);
-}
-
-void delay(){
-	int i;
-	for(i = 0; i < 100000; i++){ }
 }
 
 void Bluetooth_Init(BlueConfig *config){

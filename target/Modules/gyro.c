@@ -1,14 +1,5 @@
 #include "gyro.h"
-
-
-/*
-gyro_start();      <- 여기 함수 다 넣음.
-
-*/
-void delay(){
-	int i;
-	for(i = 0; i < 100000; i++){ }
-}
+#include "Common/utils.h"
 
 void gyro_RCC_Configuration() {
   
