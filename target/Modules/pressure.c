@@ -1,11 +1,29 @@
 #include "pressure.h"
 
-void clock_enable(){
+static uint16_t PRESSURE_VALUE = 0;
+
+static void clock_enable(){
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
 }
 
-void pressure_configuration(struct pressure* P){
+static void NVIC_Configure(){
+  NVIC_InitTypeDef nvic;
+  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+  nvic.NVIC_IRQChannel = ADC1_2_IRQn;
+  nvic.NVIC_IRQChannelPreemptionPriority = 0x00;
+  nvic.NVIC_IRQChannelSubPriority = 0x00;
+  nvic.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&nvic);
+}
+
+void pressure_init(pressure* P){
+  // enable required clock
+  clock_enable();
+  
+  // set required interrupt callback
+  NVIC_Configure();
+  
   ADC_InitTypeDef adc;
 
   adc.ADC_Mode = ADC_Mode_Independent;
@@ -31,28 +49,14 @@ void pressure_configuration(struct pressure* P){
   GPIO_Init(GPIOC, &pressure_GPIO_InitStructure);
 }
 
-
 void ADC1_2_IRQHandler(){
-  if(ADC_GetITStatus(ADC1,ADC_IT_EOC)!=RESET) value = ADC_GetConversionValue(ADC1);
+  if(ADC_GetITStatus(ADC1,ADC_IT_EOC)!= RESET)
+  {
+    PRESSURE_VALUE = ADC_GetConversionValue(ADC1);
+  }
   ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
 }
 
-void NVIC_Configure(){
-  NVIC_InitTypeDef nvic;
-  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
-  nvic.NVIC_IRQChannel = ADC1_2_IRQn;
-  nvic.NVIC_IRQChannelPreemptionPriority = 0x00;
-  nvic.NVIC_IRQChannelSubPriority = 0x00;
-  nvic.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&nvic);
-}
-
-void get_value(){
-  ADC_SoftwareStartConvCmd(ADC1, ENABLE);
-  value = ADC_GetConversionValue(ADC1);
-  return value;
-}
-
-bool check(){
-  if get_value() >= WEIGHT return true;
+bool pressure_check(){
+  return PRESSURE_VALUE >= PRESSURE_WEIGHT;
 }
