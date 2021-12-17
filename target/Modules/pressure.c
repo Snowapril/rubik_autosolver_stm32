@@ -8,7 +8,7 @@ static void clock_enable(){
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 }
 
-static void NVIC_Configure(){
+/*static void NVIC_Configure(){
   NVIC_InitTypeDef nvic;
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
   nvic.NVIC_IRQChannel = ADC1_2_IRQn;
@@ -16,14 +16,14 @@ static void NVIC_Configure(){
   nvic.NVIC_IRQChannelSubPriority = 0x00;
   nvic.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&nvic);
-}
+}*/
 
 void pressure_init(pressure* P){
   // enable required clock
   clock_enable();
   
   // set required interrupt callback
-  NVIC_Configure();
+  //NVIC_Configure();
   
   ADC_InitTypeDef adc;
 
