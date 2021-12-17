@@ -6,6 +6,7 @@ void relay_clock_enable(){
 }
 
 void relay_gpio_configuration(relay* R){
+  relay_clock_enable();
   GPIO_InitTypeDef relay_GPIO_InitStructure;
   relay_GPIO_InitStructure.GPIO_Pin = R->pin;
   relay_GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
