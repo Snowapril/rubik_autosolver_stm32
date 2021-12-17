@@ -36,7 +36,7 @@ static void motor_driver_init_gpio(struct MotorDriverConfig* config) {
     GPIO_InitTypeDef step_init_struct;
     step_init_struct.GPIO_Pin     = config->step_pin;
     step_init_struct.GPIO_Speed   = GPIO_Speed_50MHz;
-    step_init_struct.GPIO_Mode    = GPIO_Mode_AF_PP;
+    step_init_struct.GPIO_Mode    = GPIO_Mode_Out_PP;
     GPIO_Init(config->common_gpio_port, &step_init_struct);
   
     GPIO_InitTypeDef enable_init_struct;
