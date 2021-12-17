@@ -19,6 +19,7 @@ static void Bluetooth_GPIO_Init(){
     //USART1 input Mode
     Gpio_Init.GPIO_Mode = GPIO_Mode_IPD;
     Gpio_Init.GPIO_Pin=(GPIO_Pin_10);
+    Gpio_Init.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOA, &Gpio_Init);
     
     Gpio_Init.GPIO_Pin   = GPIO_Pin_2;
@@ -40,7 +41,7 @@ static void Bluetooth_USART_Init(){
     USART_InitTypeDef usart2;
 
     usart1.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-    usart1.USART_BaudRate = 9600; // USART1
+    usart1.USART_BaudRate = 57600; // USART1
     usart1.USART_WordLength = USART_WordLength_8b;
     usart1.USART_StopBits=USART_StopBits_1;
     usart1.USART_Parity=USART_Parity_No;
@@ -108,11 +109,11 @@ int Bluetooth_send_data(const char *data, BlueConfig *config){
 
     for(i = 0; i < strlen(data); i++){
         USART_SendData(USART2, data[i]);
-        delay();
+        delay_ms(10);
     }
     
     USART_SendData(USART2, '\r');
-    delay();
+    delay_ms(10);
     
     config->isValid = false;
     return 1; // success for sending
