@@ -5,8 +5,6 @@
 #include "Common/utils.h"
 #include <stdbool.h>
 
-extern BlueConfig bluetooth_config;
-
 void USART1_IRQHandler(){
     char received_data = '\0'; //for save data
 
@@ -34,53 +32,32 @@ void USART2_IRQHandler(){
     USART_ClearITPendingBit(USART2, USART_IT_RXNE); // USART2 PendingBit Clear
 }
 
-// <  Bluetooth Config  >
-//  isATscan : false
-//  isValid : false
-static BlueConfig get_bluetooth_default_config() {
-   static BlueConfig config = {
-    .isValid= false,
-    .isATscan = false,
-  };
-  return config;
-}
-
-// <  Motor Driver Config  >
-//  GPIO Clock  : APB2_GPIOD
-//  Common GPIO : GPIOD
-//  Step Pin    : Pin 3
-//  Enable Pin  : Pin 4
-//  Dir Pin     : Pin 5
-//  Timer Clock : APB1_TIM4
-//  Timer Pin   : TIM4
-static struct MotorDriverConfig get_motor_default_config() {
-   static struct MotorDriverConfig config = {
-    .gpio_clock_port = RCC_APB2Periph_GPIOD,
-    .common_gpio_port = GPIOD,
-    .step_pin = GPIO_Pin_3,
-    .enable_pin = GPIO_Pin_4,
-    .dir_pin = GPIO_Pin_5,
-    .timer_clock_port = RCC_APB1Periph_TIM4,
-    .timer_pin = TIM4,
-  };
-  return config;
-}
-
 int main(void) {
     struct SolverConfig config = {
         .bluetooth_config = get_bluetooth_default_config(),
-        .motor_driver_config = get_motor_default_config(),
+        .motor_driver_configs = {
+          get_motor1_default_config(),
+          get_motor1_default_config(),
+          get_motor1_default_config(),
+          get_motor1_default_config(),
+          get_motor1_default_config(),
+          get_motor1_default_config(),
+        },
     };
 
     // initialize rubik cube auto solver
-    init_autosolver(&config);
     
+    unsigned int steps = 200, motor_delay = 100;
     while (get_autosolver_should_close() !=  RAS_TRUE) {
         // Do stuff
-      //if (!config.bluetooth_config.isATscan && Bluetooth_send_data("AT+BTSCAN", &config.bluetooth_config)) {
-      //  config.bluetooth_config.isATscan = true;
-      //  delay_ms(250);
-      //}
+      for (int i = 0; i < steps; i++) {
+        GPIO_SetBits(config.motor_driver_configs[0].common_gpio_port,
+                     config.motor_driver_configs[0].step_pin);
+        delay_ms(motor_delay);
+        GPIO_ResetBits(config.motor_driver_configs[0].common_gpio_port,
+                     config.motor_driver_configs[0].step_pin);
+        delay_ms(motor_delay);
+      }
     }
  
     return 0;
