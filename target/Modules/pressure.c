@@ -1,6 +1,6 @@
 #include "pressure.h"
 
-static uint16_t PRESSURE_VALUE = 0;
+volatile uint32_t PRESSURE_VALUE = 0;
 
 static void clock_enable(){
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
@@ -8,7 +8,7 @@ static void clock_enable(){
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 }
 
-static void NVIC_Configure(){
+/*static void NVIC_Configure(){
   NVIC_InitTypeDef nvic;
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
   nvic.NVIC_IRQChannel = ADC1_2_IRQn;
@@ -16,14 +16,14 @@ static void NVIC_Configure(){
   nvic.NVIC_IRQChannelSubPriority = 0x00;
   nvic.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&nvic);
-}
+}*/
 
 void pressure_init(pressure* P){
   // enable required clock
   clock_enable();
   
   // set required interrupt callback
-  NVIC_Configure();
+  //NVIC_Configure();
   
   ADC_InitTypeDef adc;
 
@@ -54,8 +54,8 @@ void pressure_init(pressure* P){
 void DMA_Configure(void) {
     DMA_InitTypeDef DMA_InitStructure; 
     DMA_DeInit(DMA1_Channel1); 
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint16_t) &ADC1->DR; 
-    DMA_InitStructure.DMA_MemoryBaseAddr = (uint16_t) &PRESSURE_VALUE; 
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) &ADC1->DR; 
+    DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t) &PRESSURE_VALUE; 
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC; 
     DMA_InitStructure.DMA_BufferSize = 1; 
     
