@@ -1,6 +1,6 @@
 #include "pressure.h"
 
-static uint16_t PRESSURE_VALUE = 0;
+volatile uint32_t PRESSURE_VALUE = 0;
 
 static void clock_enable(){
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
@@ -54,8 +54,8 @@ void pressure_init(pressure* P){
 void DMA_Configure(void) {
     DMA_InitTypeDef DMA_InitStructure; 
     DMA_DeInit(DMA1_Channel1); 
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint16_t) &ADC1->DR; 
-    DMA_InitStructure.DMA_MemoryBaseAddr = (uint16_t) &PRESSURE_VALUE; 
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) &ADC1->DR; 
+    DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t) &PRESSURE_VALUE; 
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC; 
     DMA_InitStructure.DMA_BufferSize = 1; 
     
