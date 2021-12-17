@@ -5,6 +5,7 @@ static uint16_t PRESSURE_VALUE = 0;
 static void clock_enable(){
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 }
 
 static void NVIC_Configure(){
@@ -38,6 +39,7 @@ void pressure_init(pressure* P){
   ADC_DMACmd(ADC1,ENABLE);
   ADC_Cmd(ADC1, ENABLE);
   ADC_ResetCalibration(ADC1);
+  while (ADC_GetResetCalibrationStatus(ADC1));
   ADC_StartCalibration(ADC1);
   while (ADC_GetCalibrationStatus(ADC1));
   ADC_SoftwareStartConvCmd(ADC1, ENABLE);
@@ -49,12 +51,23 @@ void pressure_init(pressure* P){
   GPIO_Init(GPIOC, &pressure_GPIO_InitStructure);
 }
 
-void ADC1_2_IRQHandler(){
-  if(ADC_GetITStatus(ADC1,ADC_IT_EOC)!= RESET)
-  {
-    PRESSURE_VALUE = ADC_GetConversionValue(ADC1);
-  }
-  ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
+void DMA_Configure(void) {
+    DMA_InitTypeDef DMA_InitStructure; 
+    DMA_DeInit(DMA1_Channel1); 
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) &ADC1->DR; 
+    DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t) &PRESSURE_VALUE; 
+    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC; 
+    DMA_InitStructure.DMA_BufferSize = 1; 
+    
+    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable; 
+    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable; 
+    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord; ; 
+    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Word; 
+    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular; 
+    DMA_InitStructure.DMA_Priority = DMA_Priority_High; 
+    DMA_InitStructure.DMA_M2M = DMA_M2M_Disable; 
+    DMA_Init(DMA1_Channel1, &DMA_InitStructure); 
+    DMA_Cmd(DMA1_Channel1, ENABLE);
 }
 
 bool pressure_check(){
