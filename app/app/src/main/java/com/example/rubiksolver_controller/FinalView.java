@@ -65,30 +65,11 @@ public class FinalView extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        //this.cube = (HashMap<String, char[][]>)intent.getSerializableExtra("cube");
 
-        //read hashmap and color grid
-//        ArrayList<char[]> cubestate = new ArrayList<>();
-//
-//        int cubevalueindex = 6,cubevalueindex2 = 6,cubevalueindex3 = 9;
         for (String key:Storage.cube.keySet()){
             char[][] thisFace = Storage.cube.get(key);
             for (int i=0;i<3;i++){
-//                if(key == "back") {
-//                    cubestate.add(cubevalueindex,thisFace[i]);
-//                    cubevalueindex += 1;
-//                }
-//                else if(key == "front") {
-//                    cubestate.add(cubevalueindex2,thisFace[i]);
-//                    cubevalueindex2 += 1;
-//                }
-//                else if(key == "right") {
-//                    cubestate.add(cubevalueindex3,thisFace[i]);
-//                    cubevalueindex3 += 1;
-//                }
-//                else {
-//                    cubestate.add(thisFace[i]);
-//                }
+
                 for (int j=0;j<3;j++){
                     int buttonIndex = i*3 + j;
                     Button btn = buttonsMap.get(key).get(buttonIndex);
@@ -117,15 +98,7 @@ public class FinalView extends AppCompatActivity {
                 }
             }
         }
-//        Collections.swap(cubestate,4,7);
-//        Collections.swap(cubestate,5,11);
-//        Collections.swap(cubestate,6,12);
-//        Collections.swap(cubestate,10,13);
-//
-//
-//        for(int k = 0; k < cubestate.size(); k++) {
-//            System.out.println("cubevalues = " + cubestate.get(k)[0] + cubestate.get(k)[1] + cubestate.get(k)[2]);
-//        }
+
     }
 
 
