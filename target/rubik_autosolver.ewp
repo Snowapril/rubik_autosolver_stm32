@@ -2347,12 +2347,6 @@
             <name>$PROJ_DIR$\Modules\gyro.h</name>
         </file>
         <file>
-            <name>$PROJ_DIR$\Modules\motor.c</name>
-        </file>
-        <file>
-            <name>$PROJ_DIR$\Modules\motor.h</name>
-        </file>
-        <file>
             <name>$PROJ_DIR$\Modules\motor_driver.c</name>
         </file>
         <file>
@@ -2376,6 +2370,18 @@
     </group>
     <group>
         <name>Sources</name>
+        <file>
+            <name>$PROJ_DIR$\Sources\action.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Sources\action.h</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Sources\action_queue.c</name>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Sources\action_queue.h</name>
+        </file>
         <file>
             <name>$PROJ_DIR$\Sources\main.c</name>
         </file>
