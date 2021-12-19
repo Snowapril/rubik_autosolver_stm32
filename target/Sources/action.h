@@ -1,0 +1,28 @@
+#ifndef ACTION_H
+#define ACTION_H
+
+#include <stdbool.h>
+#include "stm32f10x.h"
+
+#define ACTION_INVERSE_OFFSET 4
+#define ACTION_TYPE_MASK 0xf
+
+enum ActionType {
+  ACTION_L = 0 | 0 << ACTION_INVERSE_OFFSET,
+  ACTION_LI = 0 | 1 << ACTION_INVERSE_OFFSET,
+  ACTION_R = 1 | 0 << ACTION_INVERSE_OFFSET,
+  ACTION_RI = 1 | 1 << ACTION_INVERSE_OFFSET,
+  ACTION_U = 2 | 0 << ACTION_INVERSE_OFFSET,
+  ACTION_UI = 2 | 1 << ACTION_INVERSE_OFFSET,
+  ACTION_D = 3 | 0 << ACTION_INVERSE_OFFSET,
+  ACTION_DI = 3 | 1 << ACTION_INVERSE_OFFSET,
+  ACTION_F = 4 | 0 << ACTION_INVERSE_OFFSET,
+  ACTION_FI = 4 | 1 << ACTION_INVERSE_OFFSET,
+  ACTION_B = 5 | 0 << ACTION_INVERSE_OFFSET,
+  ACTION_BI = 5 | 1 << ACTION_INVERSE_OFFSET,
+  ACTION_UNDEFINED,
+};
+
+void query_action(enum ActionType type, int *index, int *clockwise);
+
+#endif
