@@ -9,6 +9,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.chaquo.python.PyObject;
+import com.chaquo.python.Python;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -98,9 +101,7 @@ public class FinalView extends AppCompatActivity {
                 }
             }
         }
-
     }
-
 
     public void ChangeType(View view) {
         ArrayList<char[]> cubestate = new ArrayList<>();
@@ -134,13 +135,25 @@ public class FinalView extends AppCompatActivity {
             cubeState_str = cubeState_str + cubestate.get(k)[0] + cubestate.get(k)[1] + cubestate.get(k)[2];
             System.out.println("cubeString = " + cubeState_str);
         }
+
+        Python py = Python.getInstance();
+        PyObject cubeModule = py.getModule("rubik.cube");
+        PyObject solverModule = py.getModule("rubik.solve");
+        PyObject optimizeModule = py.getModule("rubik.optimize");
+        PyObject utilModule = py.getModule("utils");
+
+        PyObject cubeObj = cubeModule.callAttr("Cube", cubeState_str);
+        PyObject solverObj = solverModule.callAttr("Solver", cubeObj);
+        solverObj.callAttr("solve");
+        PyObject optimizedMoves = optimizeModule.callAttr("optimize_moves", solverObj.get("moves"));
+        PyObject tokenizedMoves = utilModule.callAttr("tokenize", optimizedMoves);
+
         if(view.getId() == R.id.button10) {  // Buttoon의 ID를 찾아서 실행이 된다.
-            Toast.makeText(this, cubeState_str, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, tokenizedMoves.toString(), Toast.LENGTH_SHORT).show();
         }
+
+        ConnectedThread.getInstance().write(tokenizedMoves.toString());
     }
-
-
-
 
     public void finalGoTop(View view){
         Intent intent = new Intent(this, com.example.rubiksolver_controller.TopActivity.class);
