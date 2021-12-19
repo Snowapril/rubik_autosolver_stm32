@@ -3,61 +3,43 @@
 #include "bluetooth.h"
 #include "motor_driver.h"
 #include "Common/utils.h"
+#include "action_queue.h"
 #include <stdbool.h>
 
-void USART1_IRQHandler(){
-    char received_data = '\0'; //for save data
+extern BlueConfig* BLUETOOTH_CONFIG;
+extern Queue ACTION_QUEUE;
 
-    while(USART_GetFlagStatus(USART1, USART_FLAG_TXE) == RESET); // Wait the USART1 Tx to SET
-    
-    received_data = USART_ReceiveData(USART1) & 0xFF; //saving received data
-
-    USART_SendData(USART1, received_data); // Send to USART1
-    USART_SendData(USART2, received_data); // Send to USART2(bluetooth)
-
-    USART_ClearITPendingBit(USART1, USART_IT_RXNE); // USART1 PendingBit Clear
-}
-
-void USART2_IRQHandler(){
-    char received_data = '\0'; //for save data
-
-    while(USART_GetFlagStatus(USART2, USART_FLAG_TXE) == RESET); // Wait the USART2 Tx to SET
-    
-    received_data = (unsigned char)USART_ReceiveData(USART2) & 0xFF; //saving received data
-
-    USART_SendData(USART1, received_data); // Send to USART2(bluetooth)
-
-    // blue.isValid = true;
-
-    USART_ClearITPendingBit(USART2, USART_IT_RXNE); // USART2 PendingBit Clear
+static struct SolverConfig defaultAppConfig() {
+  static struct SolverConfig config = {
+    .bluetooth_config = { .isValid = false, .isATscan = false },
+    .motor_driver_configs = {
+      { .gpio_clock_port=RCC_APB2Periph_GPIOD, .common_gpio_port=GPIOD,
+        .step_pin=GPIO_Pin_3, .enable_pin=GPIO_Pin_4, .dir_pin=GPIO_Pin_5 },
+      { .gpio_clock_port=RCC_APB2Periph_GPIOD, .common_gpio_port=GPIOD,
+        .step_pin=GPIO_Pin_6, .enable_pin=GPIO_Pin_7, .dir_pin=GPIO_Pin_8 },
+      { .gpio_clock_port=RCC_APB2Periph_GPIOD, .common_gpio_port=GPIOD,
+        .step_pin=GPIO_Pin_9, .enable_pin=GPIO_Pin_10, .dir_pin=GPIO_Pin_11 },
+      { .gpio_clock_port=RCC_APB2Periph_GPIOD, .common_gpio_port=GPIOD,
+        .step_pin=GPIO_Pin_12, .enable_pin=GPIO_Pin_13, .dir_pin=GPIO_Pin_14 },
+      { .gpio_clock_port=RCC_APB2Periph_GPIOE, .common_gpio_port=GPIOE,
+        .step_pin=GPIO_Pin_3, .enable_pin=GPIO_Pin_4, .dir_pin=GPIO_Pin_5 },
+      { .gpio_clock_port=RCC_APB2Periph_GPIOE, .common_gpio_port=GPIOE,
+        .step_pin=GPIO_Pin_6, .enable_pin=GPIO_Pin_7, .dir_pin=GPIO_Pin_8 },
+    },
+  };
+  return config;
 }
 
 int main(void) {
-    struct SolverConfig config = {
-        .bluetooth_config = get_bluetooth_default_config(),
-        .motor_driver_configs = {
-          get_motor1_default_config(),
-          get_motor1_default_config(),
-          get_motor1_default_config(),
-          get_motor1_default_config(),
-          get_motor1_default_config(),
-          get_motor1_default_config(),
-        },
-    };
-
-    // initialize rubik cube auto solver
+    struct SolverConfig config = defaultAppConfig();
+    BLUETOOTH_CONFIG = &config.bluetooth_config;
+    queue_init(&ACTION_QUEUE);
+    // Initialize rubik auto solver application
+    init_autosolver(&config);
     
-    unsigned int steps = 200, motor_delay = 100;
+    // Main loop for this application
     while (get_autosolver_should_close() !=  RAS_TRUE) {
-        // Do stuff
-      for (int i = 0; i < steps; i++) {
-        GPIO_SetBits(config.motor_driver_configs[0].common_gpio_port,
-                     config.motor_driver_configs[0].step_pin);
-        delay_ms(motor_delay);
-        GPIO_ResetBits(config.motor_driver_configs[0].common_gpio_port,
-                     config.motor_driver_configs[0].step_pin);
-        delay_ms(motor_delay);
-      }
+        loop(&config);
     }
  
     return 0;
