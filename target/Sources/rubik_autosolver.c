@@ -1,6 +1,7 @@
 #include "rubik_autosolver.h"
 #include "stm32f10x.h"
 #include "stm32f10x_rcc.h"
+#include "lcd.h"
 #include "system_stm32f10x.h"
 #include "Common/utils.h"
 #include "bluetooth.h"
@@ -20,11 +21,16 @@ void init_autosolver(struct SolverConfig* config) {
     SystemInit();
 
     // common clock enable
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
+    RCC_APB2PeriphClockCmd(( RCC_APB2Periph_GPIOA | 
+                             RCC_APB2Periph_GPIOB |
+                             RCC_APB2Periph_GPIOC |
+                             RCC_APB2Periph_GPIOD |
+                             RCC_APB2Periph_GPIOE |
+                             RCC_APB2Periph_AFIO   ), ENABLE);
     
     // initialize each modules
     // 1. init motor driver
-    for (int i = 0; i < 1; ++i) {// TODO : i < 1 to i < 6
+    for (int i = 0; i < 6; ++i) {
       motor_driver_init(&config->motor_driver_configs[i]);
     }
     // 2. init bluetooth module
@@ -38,6 +44,10 @@ void init_autosolver(struct SolverConfig* config) {
     //relay_clock_enable();
     //relay_gpio_configuration(&relay_config);
     // 4. init pressure module
+    // 5. init LCD module
+    LCD_Init();
+    Touch_Configuration();
+    LCD_Clear(BLACK);
 }
 
 int get_autosolver_should_close() {
@@ -66,13 +76,11 @@ void USART2_IRQHandler(){
   
     if (received_data == '#') {
       ACTION_BUFFER[ACTION_INDEX] = '\0';
-      printf("%s\n", ACTION_BUFFER);
       queue_push(&ACTION_QUEUE, ACTION_BUFFER);
       ACTION_INDEX = 0;
     } else {
       ACTION_BUFFER[ACTION_INDEX++] = received_data;
     }
-    printf("%c ", received_data);
     
     USART_SendData(USART1, received_data); // Send to USART2(bluetooth)
 
@@ -83,6 +91,15 @@ void USART2_IRQHandler(){
 }
 
 void loop(struct SolverConfig* config) {
+  static char* ACTION_TABLE[6][2] = {
+    { "L", "Li" },
+    { "R", "Ri" },
+    { "U", "Ui" },
+    { "D", "Di" },
+    { "F", "Fi" },
+    { "B", "Bi" },
+  };
+  
   if (BLUETOOTH_CONFIG) {
     if (!BLUETOOTH_CONFIG->isATscan && Bluetooth_send_data("AT+BTSCAN", BLUETOOTH_CONFIG)) {
       BLUETOOTH_CONFIG->isATscan = true;
@@ -93,15 +110,22 @@ void loop(struct SolverConfig* config) {
       // Bluetooth_send_Data("true", BLUETOOTH_CONFIG); pressure module
     }                                                       
   }
-          
+  
+  LCD_ShowString(10, 120, "PNU Embedded Term Project", WHITE, BLACK);
+  LCD_ShowString(10, 170, "Next Action : ", WHITE, BLACK);
   if (isEmpty(&ACTION_QUEUE) == false) {
     enum ActionType type;
     queue_pop(&ACTION_QUEUE, &type);
     if (type == ACTION_UNDEFINED) return;
     int index, clockwise;
     query_action(type, &index, &clockwise);
+    LCD_ShowString(120, 170, ACTION_TABLE[index][clockwise], WHITE, BLACK);
     motor_driver_rotate(&config->motor_driver_configs[index],
                         MOTOR_QUARTER_ANGLE, MOTOR_SPEED, clockwise);
+    delay_ms(100);
+    LCD_Clear(BLACK);
+  } else {
+    LCD_ShowString(120, 170, "No action", WHITE, BLACK);
   }
 }
 
