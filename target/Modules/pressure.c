@@ -1,6 +1,6 @@
 #include "pressure.h"
 
-volatile uint32_t PRESSURE_VALUE = 0;
+volatile uint32_t PRESSURE_VALUE;
 
 static void clock_enable(){
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
@@ -23,6 +23,11 @@ void pressure_init(pressure* P){
   // enable required clock
   clock_enable();
   
+  GPIO_InitTypeDef pressure_GPIO_InitStructure;
+  pressure_GPIO_InitStructure.GPIO_Pin = P->pin;
+  pressure_GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  pressure_GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
+  GPIO_Init(GPIOC, &pressure_GPIO_InitStructure);
   // set required interrupt callback
   //NVIC_Configure();
   
@@ -36,15 +41,9 @@ void pressure_init(pressure* P){
   adc.ADC_NbrOfChannel = 1;
   ADC_Init(ADC1, &adc);
   
-  ADC_RegularChannelConfig(ADC1, P->channel, 1, ADC_SampleTime_239Cycles5);
+  ADC_RegularChannelConfig(ADC1, P->channel, 1, ADC_SampleTime_55Cycles5);
   ADC_DMACmd(ADC1,ENABLE);
   ADC_Cmd(ADC1, ENABLE);
-  
-  GPIO_InitTypeDef pressure_GPIO_InitStructure;
-  pressure_GPIO_InitStructure.GPIO_Pin = P->pin;
-  pressure_GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  pressure_GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-  GPIO_Init(GPIOC, &pressure_GPIO_InitStructure);
 }
 
 void DMA_Configure(void) {
