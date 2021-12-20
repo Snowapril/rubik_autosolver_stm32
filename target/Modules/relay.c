@@ -15,9 +15,9 @@ void relay_gpio_configuration(relay* R){
 }
 
 void relay_on(relay* R){
-  GPIOC->BSRR = R->set;
+  GPIO_SetBits(GPIOC, R->pin);
 }
 
 void relay_off(relay* R){
-  GPIOC->BSRR = R->reset;
+  GPIO_ResetBits(GPIOC, R->pin);
 }
