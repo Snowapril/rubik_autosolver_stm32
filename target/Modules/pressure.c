@@ -4,7 +4,7 @@ volatile uint32_t PRESSURE_VALUE;
 
 static void clock_enable(){
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 }
@@ -27,7 +27,7 @@ void pressure_init(pressure* P){
   pressure_GPIO_InitStructure.GPIO_Pin = P->pin;
   pressure_GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   pressure_GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-  GPIO_Init(GPIOC, &pressure_GPIO_InitStructure);
+  GPIO_Init(GPIOA, &pressure_GPIO_InitStructure);
   // set required interrupt callback
   //NVIC_Configure();
   
