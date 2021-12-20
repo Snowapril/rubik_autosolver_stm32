@@ -11,8 +11,8 @@
 #define PRESSURE_WEIGHT 500;
 
 typedef struct{
-  uint16_t pin;/*GPIO_Pin_0*/
-  uint8_t channel;/*ADC_Channel_10 */
+  uint16_t pin;/*GPIO_Pin_1*/
+  uint8_t channel;/*ADC_Channel_11 */
 } pressure;
 
 void pressure_init(pressure* P);
