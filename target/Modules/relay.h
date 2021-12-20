@@ -12,7 +12,6 @@ typedef struct _relay{
 
 void relay_gpio_configuration(relay* R);
 void relay_on(relay* R);
-void delay();
 void relay_off(relay* R);
 
 #endif
