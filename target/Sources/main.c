@@ -9,29 +9,41 @@
 extern BlueConfig* BLUETOOTH_CONFIG;
 extern Queue ACTION_QUEUE;
 
-static struct SolverConfig defaultAppConfig() {
+static struct SolverConfig default_app_config() {
   static struct SolverConfig config = {
     .bluetooth_config = { .isValid = false, .isATscan = false },
     .motor_driver_configs = {
-      { .gpio_clock_port=RCC_APB2Periph_GPIOD, .common_gpio_port=GPIOD,
-        .step_pin=GPIO_Pin_3, .enable_pin=GPIO_Pin_4, .dir_pin=GPIO_Pin_5 },
-      { .gpio_clock_port=RCC_APB2Periph_GPIOD, .common_gpio_port=GPIOD,
-        .step_pin=GPIO_Pin_6, .enable_pin=GPIO_Pin_7, .dir_pin=GPIO_Pin_8 },
-      { .gpio_clock_port=RCC_APB2Periph_GPIOD, .common_gpio_port=GPIOD,
-        .step_pin=GPIO_Pin_9, .enable_pin=GPIO_Pin_10, .dir_pin=GPIO_Pin_11 },
-      { .gpio_clock_port=RCC_APB2Periph_GPIOD, .common_gpio_port=GPIOD,
-        .step_pin=GPIO_Pin_12, .enable_pin=GPIO_Pin_13, .dir_pin=GPIO_Pin_14 },
-      { .gpio_clock_port=RCC_APB2Periph_GPIOE, .common_gpio_port=GPIOE,
-        .step_pin=GPIO_Pin_3, .enable_pin=GPIO_Pin_4, .dir_pin=GPIO_Pin_5 },
-      { .gpio_clock_port=RCC_APB2Periph_GPIOE, .common_gpio_port=GPIOE,
-        .step_pin=GPIO_Pin_6, .enable_pin=GPIO_Pin_7, .dir_pin=GPIO_Pin_8 },
+      // Left Face
+      { .step_port=GPIOB, .step_pin=GPIO_Pin_12,
+        .enable_port=GPIOB, .enable_pin=GPIO_Pin_14, 
+        .dir_port=GPIOD, .dir_pin=GPIO_Pin_8 },
+      // Right Face
+      { .step_port=GPIOD, .step_pin=GPIO_Pin_10,
+        .enable_port=GPIOD, .enable_pin=GPIO_Pin_12, 
+        .dir_port=GPIOD, .dir_pin=GPIO_Pin_14 },
+      // Up Face
+      { .step_port=GPIOC, .step_pin=GPIO_Pin_6,
+        .enable_port=GPIOC, .enable_pin=GPIO_Pin_8, 
+        .dir_port=GPIOA, .dir_pin=GPIO_Pin_8 },
+      // Down Face
+      { .step_port=GPIOA, .step_pin=GPIO_Pin_10,
+        .enable_port=GPIOA, .enable_pin=GPIO_Pin_12, 
+        .dir_port=GPIOA, .dir_pin=GPIO_Pin_14 },
+      // Front Face
+      { .step_port=GPIOC, .step_pin=GPIO_Pin_10,
+        .enable_port=GPIOC, .enable_pin=GPIO_Pin_12, 
+        .dir_port=GPIOD, .dir_pin=GPIO_Pin_1 },
+      // Back Face
+      { .step_port=GPIOD, .step_pin=GPIO_Pin_3,
+        .enable_port=GPIOD, .enable_pin=GPIO_Pin_5, 
+        .dir_port=GPIOD, .dir_pin=GPIO_Pin_7 },
     },
   };
   return config;
 }
 
 int main(void) {
-    struct SolverConfig config = defaultAppConfig();
+    struct SolverConfig config = default_app_config();
     BLUETOOTH_CONFIG = &config.bluetooth_config;
     queue_init(&ACTION_QUEUE);
     // Initialize rubik auto solver application
