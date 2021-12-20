@@ -6,14 +6,15 @@
 
 #define MOTOR_QUARTER_ANGLE 50
 #define MOTOR_HALF_ANGLE 100
-#define MOTOR_SPEED 10
+#define MOTOR_SPEED 10000
 
 // Use same GPIO pin for clock & each port
 struct MotorDriverConfig {
-    unsigned int gpio_clock_port;
-    GPIO_TypeDef* common_gpio_port;
+    GPIO_TypeDef* step_port;
     unsigned int step_pin;
+    GPIO_TypeDef* enable_port;
     unsigned int enable_pin;
+    GPIO_TypeDef* dir_port;
     unsigned int dir_pin;
 };
 
