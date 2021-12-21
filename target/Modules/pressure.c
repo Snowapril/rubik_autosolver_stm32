@@ -4,76 +4,58 @@ volatile uint32_t PRESSURE_VALUE;
 
 static void clock_enable(){
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 }
 
-/*static void NVIC_Configure(){
+static void NVIC_Configure(){
   NVIC_InitTypeDef nvic;
-  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
   nvic.NVIC_IRQChannel = ADC1_2_IRQn;
   nvic.NVIC_IRQChannelPreemptionPriority = 0x00;
   nvic.NVIC_IRQChannelSubPriority = 0x00;
   nvic.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&nvic);
-}*/
+  ADC_ITConfig(ADC1, ADC_IT_EOC, ENABLE);
+  ADC_Cmd(ADC1, ENABLE);
+}
 
-void pressure_init(pressure* P){
+void pressure_init(Pressure* P){
   // enable required clock
   clock_enable();
   
   GPIO_InitTypeDef pressure_GPIO_InitStructure;
   pressure_GPIO_InitStructure.GPIO_Pin = P->pin;
-  pressure_GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  pressure_GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
   pressure_GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
-  GPIO_Init(GPIOA, &pressure_GPIO_InitStructure);
-  // set required interrupt callback
-  //NVIC_Configure();
+  GPIO_Init(P->port, &pressure_GPIO_InitStructure);
   
-  ADC_InitTypeDef adc;
-
-  adc.ADC_Mode = ADC_Mode_Independent;
-  adc.ADC_ScanConvMode = DISABLE; 
-  adc.ADC_ContinuousConvMode = ENABLE; 
-  adc.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None; 
-  adc.ADC_DataAlign = ADC_DataAlign_Right; 
-  adc.ADC_NbrOfChannel = 1;
-  ADC_Init(ADC1, &adc);
+  ADC_InitTypeDef ADC_InitStructure;
+  ADC_DeInit(ADC1);
+  ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
+  ADC_InitStructure.ADC_ScanConvMode = ENABLE;
+  ADC_InitStructure.ADC_ContinuousConvMode = ENABLE;
+  ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
+  ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
+  ADC_InitStructure.ADC_NbrOfChannel = 2;
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 1, ADC_SampleTime_55Cycles5);
+  ADC_RegularChannelConfig(ADC1, ADC_Channel_12, 2, ADC_SampleTime_55Cycles5);
+  ADC_Init(ADC1, &ADC_InitStructure);
   
-  ADC_RegularChannelConfig(ADC1, P->channel, 1, ADC_SampleTime_55Cycles5);
-  ADC_DMACmd(ADC1,ENABLE);
-  ADC_Cmd(ADC1, ENABLE);
-}
-
-void DMA_Configure(void) {
-    DMA_InitTypeDef DMA_InitStructure; 
-    DMA_DeInit(DMA1_Channel1); 
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t) &ADC1->DR; 
-    DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t) &PRESSURE_VALUE; 
-    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC; 
-    DMA_InitStructure.DMA_BufferSize = 1; 
-    
-    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable; 
-    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable; 
-    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord; ; 
-    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Word; 
-    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular; 
-    DMA_InitStructure.DMA_Priority = DMA_Priority_High; 
-    DMA_InitStructure.DMA_M2M = DMA_M2M_Disable; 
-    DMA_Init(DMA1_Channel1, &DMA_InitStructure); 
-    DMA_Cmd(DMA1_Channel1, ENABLE);
-}
-
-void adc_start(){
-  DMA_Configure(); 
   ADC_ResetCalibration(ADC1);
-  while (ADC_GetResetCalibrationStatus(ADC1));
+  while(ADC_GetResetCalibrationStatus(ADC1));
   ADC_StartCalibration(ADC1);
-  while (ADC_GetCalibrationStatus(ADC1));
+  while(ADC_GetCalibrationStatus(ADC1));
   ADC_SoftwareStartConvCmd(ADC1, ENABLE);
+  
+  // set required interrupt callback
+  NVIC_Configure();
+}
+                     
+void ADC1_2_IRQHandler(void) {
+  PRESSURE_VALUE = ADC_GetConversionValue(ADC1);
+  ADC_ClearITPendingBit(ADC1, ADC_IT_EOC);
 }
 
 bool pressure_check(){
+  printf("Pressure value : %d\n", PRESSURE_VALUE);
   return PRESSURE_VALUE >= PRESSURE_WEIGHT;
 }

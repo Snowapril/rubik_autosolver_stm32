@@ -11,11 +11,10 @@
 #define PRESSURE_WEIGHT 500;
 
 typedef struct{
+  GPIO_TypeDef* port;
   uint16_t pin;/*GPIO_Pin_1*/
-  uint8_t channel;/*ADC_Channel_11 */
-} pressure;
+} Pressure;
 
-void pressure_init(pressure* P);
+void pressure_init(Pressure* P);
 bool pressure_check();
-void adc_start();
 #endif
