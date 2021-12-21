@@ -1,5 +1,6 @@
 package com.example.rubiksolver_controller;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -22,7 +23,7 @@ public class FinalView extends AppCompatActivity {
 
     //HashMap<String, char[][]> cube = new HashMap<>();
     HashMap<String, ArrayList<Button>> buttonsMap = new HashMap<>();
-
+    Button solveBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,8 +67,6 @@ public class FinalView extends AppCompatActivity {
         bottom.add((Button) findViewById(R.id.bottom31));bottom.add((Button) findViewById(R.id.bottom32));bottom.add((Button) findViewById(R.id.bottom33));
         buttonsMap.put("bottom", bottom);
 
-
-
         Intent intent = getIntent();
 
         for (String key:Storage.cube.keySet()){
@@ -85,7 +84,7 @@ public class FinalView extends AppCompatActivity {
                         btn.setBackgroundColor(Color.YELLOW);
                     }
                     else if (thisFace[i][j] == 'O'){
-                        btn.setBackgroundColor(Color.MAGENTA);
+                        btn.setBackgroundColor(Color.rgb(255, 165, 0));
                     }
                     else if (thisFace[i][j] == 'R'){
                         btn.setBackgroundColor(Color.RED);
@@ -102,6 +101,26 @@ public class FinalView extends AppCompatActivity {
                 }
             }
         }
+
+        solveBtn = (Button)findViewById(R.id.button10);
+        Context context = this;
+        new Thread() {
+            public void run() {
+                try {
+                    while (true) {
+                        boolean signaled = false; // ConnectedThread.getInstance().checkSignal();
+                        if (signaled) {
+                            solveBtn.setEnabled(true);
+                            Toast.makeText(context, "Solve enabled!", Toast.LENGTH_SHORT);
+                            break;
+                        } else {
+                            Thread.sleep(500);
+                        }
+                    }
+                } catch (InterruptedException ex) {
+                }
+            }
+        }.start();
     }
 
     public void ChangeType(View view) throws InterruptedException {
