@@ -44,6 +44,7 @@ void init_autosolver(struct SolverConfig* config) {
     //relay_clock_enable();
     //relay_gpio_configuration(&relay_config);
     // 4. init pressure module
+    pressure_init(&config->pressure_config);
     // 5. init LCD module
     LCD_Init();
     Touch_Configuration();
@@ -77,11 +78,12 @@ void USART2_IRQHandler(){
     if (received_data == '#') {
       ACTION_BUFFER[ACTION_INDEX] = '\0';
       queue_push(&ACTION_QUEUE, ACTION_BUFFER);
+      printf("pushed : %s\n", ACTION_BUFFER);
       ACTION_INDEX = 0;
     } else {
       ACTION_BUFFER[ACTION_INDEX++] = received_data;
     }
-    
+    printf("received : %c\n", received_data);
     USART_SendData(USART1, received_data); // Send to USART2(bluetooth)
 
     if (BLUETOOTH_CONFIG)
@@ -111,6 +113,12 @@ void loop(struct SolverConfig* config) {
     }                                                       
   }
   
+  // Check cube attached
+  if (pressure_check()) {
+    printf("Cube attached!! \n");
+    Bluetooth_send_data("@", BLUETOOTH_CONFIG);
+  }
+  
   LCD_ShowString(10, 120, "PNU Embedded Term Project", WHITE, BLACK);
   LCD_ShowString(10, 170, "Next Action : ", WHITE, BLACK);
   if (isEmpty(&ACTION_QUEUE) == false) {
@@ -119,6 +127,7 @@ void loop(struct SolverConfig* config) {
     if (type == ACTION_UNDEFINED) return;
     int index, clockwise;
     query_action(type, &index, &clockwise);
+    printf("Action(%s), index(%d), clockwise(%d)\n", ACTION_TABLE[index][clockwise], index, clockwise);
     LCD_ShowString(120, 170, ACTION_TABLE[index][clockwise], WHITE, BLACK);
     motor_driver_rotate(&config->motor_driver_configs[index],
                         MOTOR_QUARTER_ANGLE, MOTOR_SPEED, clockwise);

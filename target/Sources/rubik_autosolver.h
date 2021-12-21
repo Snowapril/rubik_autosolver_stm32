@@ -15,6 +15,7 @@ enum AppState {
 struct SolverConfig {
     BlueConfig bluetooth_config;
     struct MotorDriverConfig motor_driver_configs[6];
+    Pressure pressure_config;
 };
 
 // initialize modules with given configures
