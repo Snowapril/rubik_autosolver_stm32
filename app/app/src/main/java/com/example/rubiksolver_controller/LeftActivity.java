@@ -49,7 +49,7 @@ public class LeftActivity extends AppCompatActivity {
                     buttons.get(buttonIndex).setBackgroundColor(Color.YELLOW);
                 }
                 else if (thisFace[i][j]=='O'){
-                    buttons.get(buttonIndex).setBackgroundColor(Color.MAGENTA);
+                    buttons.get(buttonIndex).setBackgroundColor(Color.rgb(255, 165, 0));
                 }
                 else if (thisFace[i][j]=='R'){
                     buttons.get(buttonIndex).setBackgroundColor(Color.RED);
@@ -80,7 +80,7 @@ public class LeftActivity extends AppCompatActivity {
             thisFace[i-1][j-1]='Y';
         }
         else if (flags.get(10*i+j)==3){
-            btn.setBackgroundColor(Color.MAGENTA);
+            btn.setBackgroundColor(Color.rgb(255, 165, 0));
             flags.put(10 * i + j, 4);
             thisFace[i-1][j-1]='O';//Orange
         }
