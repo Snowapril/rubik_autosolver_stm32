@@ -38,6 +38,7 @@ static struct SolverConfig default_app_config() {
         .enable_port=GPIOD, .enable_pin=GPIO_Pin_5, 
         .dir_port=GPIOD, .dir_pin=GPIO_Pin_7 },
     },
+    .pressure_config = { .port = GPIOC, .pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 },
   };
   return config;
 }
